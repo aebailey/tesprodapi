@@ -7,9 +7,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-
-import baileyae.tescoproductapi.dummy.DummyContent;
-
 /**
  * A list fragment representing a list of Offers. This fragment
  * also supports tablet devices by allowing list items to be given an
@@ -37,6 +34,7 @@ public class OfferListFragment extends ListFragment {
      * The current activated item position. Only used on tablets.
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
+    private ProductListAdapter adapter;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -57,6 +55,8 @@ public class OfferListFragment extends ListFragment {
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onItemSelected(String id) {
+
+
         }
     };
 
@@ -70,13 +70,15 @@ public class OfferListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        adapter = new ProductListAdapter(getActivity());
+        //
+        adapter.addEvent(new ProductEvent(12345678L,"EAN1", "http://img.tesco.com/Groceries/pi/966/4015400621966/IDShot_90x90.jpg","Name1"));
+        adapter.addEvent(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name2Austin"));
+        adapter. addEvent(new ProductEvent(32345678L,"EAN3", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name3"));
+        adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name4"));
 
-        // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                DummyContent.ITEMS));
+        setListAdapter(adapter);
+
     }
 
     @Override
@@ -88,6 +90,7 @@ public class OfferListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
+
     }
 
     @Override
@@ -116,7 +119,10 @@ public class OfferListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(String.valueOf(getSelectedItemId()));
+        setActivatedPosition(position);
+
+
     }
 
     @Override

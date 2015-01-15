@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 
 /**
  * An activity representing a list of Offers. This activity
@@ -34,6 +38,10 @@ public class OfferListActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_list);
+
+
+
+
 
         if (findViewById(R.id.offer_detail_container) != null) {
             // The detail container view will be present only in the

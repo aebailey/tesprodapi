@@ -7,9 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-import baileyae.tescoproductapi.dummy.DummyContent;
-
 /**
  * A fragment representing a single Offer detail screen.
  * This fragment is either contained in a {@link OfferListActivity}
@@ -26,7 +23,7 @@ public class OfferDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private ProductEvent myEvent;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,7 +40,7 @@ public class OfferDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            //myEvent = ProductContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
     }
 
@@ -53,8 +50,8 @@ public class OfferDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_offer_detail, container, false);
 
         // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.offer_detail)).setText(mItem.content);
+        if (myEvent != null) {
+            ((TextView) rootView.findViewById(R.id.offer_detail)).setText(myEvent.getprodName());
         }
 
         return rootView;
