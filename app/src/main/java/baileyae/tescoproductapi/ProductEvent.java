@@ -16,13 +16,13 @@
  */
 package baileyae.tescoproductapi;
 
-import java.io.Serializable;
-import java.util.Date;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class ProductEvent implements Serializable {
+public class ProductEvent implements Parcelable{
 
 
-    private Long BaseProductId;
+    private String BaseProductId;
     private String EANBarcode;
     //CheaperAlternativeProductId: "",
     //HealthierAlternativeProductId: "",
@@ -43,21 +43,20 @@ public class ProductEvent implements Serializable {
 
 
 
-    public ProductEvent(Long BaseProductId,String EANBarcode,String ImagePath,String prodName) {
-    }
-
-    public ProductEvent() {
+    public ProductEvent(String BaseProductId,String EANBarcode,String ImagePath,String prodName) {
         this.BaseProductId = BaseProductId;
         this.EANBarcode = EANBarcode;
         this.ImagePath = ImagePath;
         this.prodName = prodName;
+
     }
 
-    public Long getBaseProductId() {
+
+    public String getBaseProductId() {
         return BaseProductId;
     }
 
-    public void setBaseProductId(Long BaseProductId) {
+    public void setBaseProductId(String BaseProductId) {
         this.BaseProductId = BaseProductId;
     }
 
@@ -86,4 +85,17 @@ public class ProductEvent implements Serializable {
         this.prodName = prodName;
     }
 
+    public String toString () {
+        return EANBarcode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 }

@@ -1,11 +1,20 @@
 package baileyae.tescoproductapi;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * A list fragment representing a list of Offers. This fragment
@@ -24,6 +33,21 @@ public class OfferListFragment extends ListFragment {
      */
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
+    private static String url1 = "https://secure.techfortesco.com/tescolabsapi/restservice.aspx?command=LOGIN&email=&password=&developerkey=5rW1lSTDRR4qSFkK2IYi&applicationkey=925AFA33AF0DD2EA62DB";
+    private static String url2 = "https://secure.techfortesco.com/tescolabsapi/restservice.aspx?command=PRODUCTSEARCH&searchtext=pampers&page=1&sessionkey=";
+    private String login;
+    private ProgressDialog  pDialog;
+    private ProgressDialog  pDialog2;
+    String TAG_basep = "BaseProductId";
+    String TAG_ean = "EANBarcode";
+    String TAG_img = "ImagePath";
+    String TAG_pname= "Name";
+    String basep;
+    String ean;
+    String img;
+    String pname;
+
+
     /**
      * The fragment's current callback object, which is notified of list item
      * clicks.
@@ -36,6 +60,7 @@ public class OfferListFragment extends ListFragment {
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private ProductListAdapter adapter;
 
+
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -45,7 +70,7 @@ public class OfferListFragment extends ListFragment {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(ProductEvent event);
     }
 
     /**
@@ -54,7 +79,7 @@ public class OfferListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(ProductEvent event) {
 
 
         }
@@ -72,12 +97,15 @@ public class OfferListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         adapter = new ProductListAdapter(getActivity());
         //
-        adapter.addEvent(new ProductEvent(12345678L,"EAN1", "http://img.tesco.com/Groceries/pi/966/4015400621966/IDShot_90x90.jpg","Name1"));
-        adapter.addEvent(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name2Austin"));
-        adapter. addEvent(new ProductEvent(32345678L,"EAN3", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name3"));
-        adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name4"));
 
-        setListAdapter(adapter);
+        //adapter.addEvent(new ProductEvent(12345678L,"EAN1", "http://img.tesco.com/Groceries/pi/966/4015400621966/IDShot_90x90.jpg","Name1"));
+        //adapter.addEvent(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name2"));
+        //adapter. addEvent(new ProductEvent(32345678L,"EAN3", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name3"));
+        //adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009A/07/twitter-blue.png","Name4"));
+
+
+        new GetLogin().execute();
+
 
     }
 
@@ -119,8 +147,11 @@ public class OfferListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(String.valueOf(getSelectedItemId()));
         setActivatedPosition(position);
+        setSelection(position);
+        view.setSelected(true);
+        //mCallbacks.onItemSelected(String.valueOf(getSelectedItemId()));
+        mCallbacks.onItemSelected((ProductEvent) listView.getItemAtPosition(position));
 
 
     }
@@ -131,6 +162,7 @@ public class OfferListFragment extends ListFragment {
         if (mActivatedPosition != ListView.INVALID_POSITION) {
             // Serialize and persist the activated item position.
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+            //TODO:Define in Detail Activity Selected item
         }
     }
 
@@ -146,13 +178,137 @@ public class OfferListFragment extends ListFragment {
                 : ListView.CHOICE_MODE_NONE);
     }
 
-    private void setActivatedPosition(int position) {
-        if (position == ListView.INVALID_POSITION) {
+    private void setActivatedPosition(int myposition) {
+        if (myposition == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
         } else {
-            getListView().setItemChecked(position, true);
+            getListView().setItemChecked(myposition, true);
         }
 
-        mActivatedPosition = position;
+        mActivatedPosition = myposition;
+    }
+
+    private class GetLogin extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Creating service handler class instance
+            ServiceHandler sh = new ServiceHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url1, ServiceHandler.GET);
+            Log.d("Response: ", "> " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    // Getting JSON Array node
+                    login = jsonObj.getString("SessionKey");
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            /**
+             * Updating parsed JSON data into ListView
+             * */
+
+            url2 = url2 + login;
+            Log.d("Response: ", "> " + login);
+            //adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009A/07/twitter-blue.png",login));
+            new GetOffers().execute();
+
+        }
+    }
+    private class GetOffers extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+            pDialog2 = new ProgressDialog(getActivity());
+            pDialog2.setMessage("Please wait...");
+            pDialog2.setCancelable(false);
+            pDialog2.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Creating service handler class instance
+            ServiceHandler sh = new ServiceHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url2, ServiceHandler.GET);
+            Log.d("Response: ", "> " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    // Getting JSON Array node
+                    JSONArray products = jsonObj.getJSONArray("Products");
+
+                    // looping through All Contacts
+                    //for (int i = 0; i < products.length(); i++) {
+                    for (int i = 0; i < 5; i++) {
+                        // Getting JSON Array node
+                        JSONObject p = products.getJSONObject(i);
+                        basep = p.getString(TAG_basep);
+                        ean = p.getString(TAG_ean);
+                        img = p.getString(TAG_img);
+                        pname = p.getString(TAG_pname);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run(){
+                                adapter.addEvent(new ProductEvent(basep,ean, img,pname));
+                            }
+                        });
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            if (pDialog2.isShowing())
+                pDialog2.dismiss();
+
+            //adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009A/07/twitter-blue.png",login));
+
+            setListAdapter(adapter);
+        }
     }
 }

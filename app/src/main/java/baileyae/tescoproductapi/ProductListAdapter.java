@@ -23,16 +23,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 
 public class ProductListAdapter extends BaseAdapter {
@@ -91,7 +85,8 @@ public class ProductListAdapter extends BaseAdapter {
         TextView title = (TextView) view.findViewById(R.id.title);
         title.setText(event.getprodName());
 
-
+        TextView baseproductid = (TextView) view.findViewById(R.id.baseproductid);
+        baseproductid.setText(event.getBaseProductId().toString());
 
 
 

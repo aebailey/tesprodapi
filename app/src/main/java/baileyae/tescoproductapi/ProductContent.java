@@ -29,21 +29,21 @@ public class ProductContent {
 
     public static List<ProductEvent> events = new ArrayList<ProductEvent>();
 
-    static {
+    //static {
         // Add 3 sample items.
-        addItem(new ProductEvent(12345678L,"EAN1", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
-        addItem(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
-        addItem(new ProductEvent(32345678L,"EAN3", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
-        addItem(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
+    //    addItem(new ProductEvent(12345678L,"EAN1", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
+    //    addItem(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
+    //    addItem(new ProductEvent(32345678L,"EAN3", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
+    //    addItem(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png",""));
         //addItem(new DummyItem("2", "Item 2"));
         //addItem(new DummyItem("3", "Item 3"));
-    }
+   // }
 
 
 
-    private static void addItem(ProductEvent event) {
-        events.add(event);
-    }
+   // private static void addItem(ProductEvent event) {
+    //    events.add(event);
+   // }
 
 
 }

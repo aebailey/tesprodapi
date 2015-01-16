@@ -33,11 +33,13 @@ public class OfferListActivity extends Activity
      * device.
      */
     private boolean mTwoPane;
+    private String mysearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_list);
+        mysearch = getIntent().getStringExtra("SEARCH");
 
 
 
@@ -65,13 +67,14 @@ public class OfferListActivity extends Activity
      * indicating that the item with the given ID was selected.
      */
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(ProductEvent event) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(OfferDetailFragment.ARG_ITEM_ID, id);
+            arguments.putParcelable("event", event);
+
             OfferDetailFragment fragment = new OfferDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
@@ -82,7 +85,7 @@ public class OfferListActivity extends Activity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, OfferDetailActivity.class);
-            detailIntent.putExtra(OfferDetailFragment.ARG_ITEM_ID, id);
+            detailIntent.putExtra("event", event);
             startActivity(detailIntent);
         }
     }

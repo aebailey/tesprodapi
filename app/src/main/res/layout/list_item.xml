@@ -1,7 +1,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="wrap_content"
-android:layout_height="wrap_content" >
+android:layout_height="wrap_content"
+>
 
 <ImageView
     android:id="@+id/icon"
@@ -29,7 +30,7 @@ android:layout_height="wrap_content" >
         android:singleLine="true"/>
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/baseproductid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@+id/label" 
