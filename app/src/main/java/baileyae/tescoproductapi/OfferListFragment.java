@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -46,6 +47,7 @@ public class OfferListFragment extends ListFragment {
     String ean;
     String img;
     String pname;
+    private ArrayList productList;
 
 
     /**
@@ -95,8 +97,9 @@ public class OfferListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new ProductListAdapter(getActivity());
-        //
+
+
+        productList = new ArrayList<HashMap<String, String>>();
 
         //adapter.addEvent(new ProductEvent(12345678L,"EAN1", "http://img.tesco.com/Groceries/pi/966/4015400621966/IDShot_90x90.jpg","Name1"));
         //adapter.addEvent(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name2"));
@@ -231,8 +234,8 @@ public class OfferListFragment extends ListFragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             // Dismiss the progress dialog
-            if (pDialog.isShowing())
-                pDialog.dismiss();
+            //if (pDialog.isShowing())
+             //   pDialog.dismiss();
             /**
              * Updating parsed JSON data into ListView
              * */
@@ -249,10 +252,10 @@ public class OfferListFragment extends ListFragment {
         protected void onPreExecute() {
             super.onPreExecute();
             // Showing progress dialog
-            pDialog2 = new ProgressDialog(getActivity());
-            pDialog2.setMessage("Please wait...");
-            pDialog2.setCancelable(false);
-            pDialog2.show();
+            //pDialog2 = new ProgressDialog(getActivity());
+            //pDialog2.setMessage("Please wait...");
+           // pDialog2.setCancelable(false);
+           // pDialog2.show();
 
         }
 
@@ -281,11 +284,18 @@ public class OfferListFragment extends ListFragment {
                         img = p.getString(TAG_img);
                         pname = p.getString(TAG_pname);
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            public void run(){
-                                adapter.addEvent(new ProductEvent(basep,ean, img,pname));
-                            }
-                        });
+                        //HashMap<String, String> product = new HashMap<String, String>();
+                        //product.put(TAG_basep, basep);
+                        //product.put(TAG_ean, ean);
+                        //product.put(TAG_img, img);
+                        //product.put(TAG_pname, pname);
+                        ProductEvent product = new ProductEvent(basep,ean, img,pname);
+                        productList.add(product);
+                        //getActivity().runOnUiThread(new Runnable() {
+                        //    public void run(){
+                        //        adapter.addEvent(new ProductEvent(basep,ean, img,pname));
+                        //    }
+                        //});
 
                     }
 
@@ -303,10 +313,11 @@ public class OfferListFragment extends ListFragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             // Dismiss the progress dialog
-            if (pDialog2.isShowing())
-                pDialog2.dismiss();
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            adapter = new ProductListAdapter(getActivity());
+            adapter.addAEvent(productList);
 
-            //adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009A/07/twitter-blue.png",login));
 
             setListAdapter(adapter);
         }

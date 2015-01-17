@@ -51,6 +51,11 @@ public class ProductListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addAEvent(List<ProductEvent> mevents){
+        events.addAll(mevents);
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getCount() {
