@@ -49,6 +49,7 @@ public class OfferDetailFragment extends Fragment {
         // Show the dummy content as text in a TextView.
         if (myEvent != null) {
             ((TextView) rootView.findViewById(R.id.offer_detail)).setText(myEvent.getprodName());
+            ((TextView) rootView.findViewById(R.id.offer_detail1)).setText(myEvent.getOfferPromotion());
         }
 
         return rootView;

@@ -43,11 +43,14 @@ public class ProductEvent implements Parcelable{
 
 
 
-    public ProductEvent(String BaseProductId,String EANBarcode,String ImagePath,String prodName) {
+    public ProductEvent(String BaseProductId,String EANBarcode,String ImagePath,String prodName,String OfferPromotion,String OfferValidity) {
         this.BaseProductId = BaseProductId;
         this.EANBarcode = EANBarcode;
         this.ImagePath = ImagePath;
         this.prodName = prodName;
+        this.OfferPromotion = OfferPromotion;
+        this.OfferValidity = OfferValidity;
+
 
     }
 
@@ -84,6 +87,13 @@ public class ProductEvent implements Parcelable{
     public void setprodName(String prodName) {
         this.prodName = prodName;
     }
+    public String getOfferValidity() {
+        return OfferValidity;
+    }
+    public String getOfferPromotion() {
+        return OfferPromotion;
+    }
+
 
     public String toString () {
         return EANBarcode;

@@ -14,6 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,7 +38,9 @@ public class OfferListFragment extends ListFragment {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
     private static String url1 = "https://secure.techfortesco.com/tescolabsapi/restservice.aspx?command=LOGIN&email=&password=&developerkey=5rW1lSTDRR4qSFkK2IYi&applicationkey=925AFA33AF0DD2EA62DB";
-    private static String url2 = "https://secure.techfortesco.com/tescolabsapi/restservice.aspx?command=PRODUCTSEARCH&searchtext=pampers&page=1&sessionkey=";
+    private static String url2a = "https://secure.techfortesco.com/tescolabsapi/restservice.aspx?command=PRODUCTSEARCH&searchtext=";
+    private String url2b = "&page=1&sessionkey=";
+    private String url3;
     private String login;
     private ProgressDialog  pDialog;
     private ProgressDialog  pDialog2;
@@ -43,73 +48,39 @@ public class OfferListFragment extends ListFragment {
     String TAG_ean = "EANBarcode";
     String TAG_img = "ImagePath";
     String TAG_pname= "Name";
+    String TAG_OffProm = "OfferPromotion";
+    String TAG_OffVal = "OfferValidity";
     String basep;
     String ean;
     String img;
     String pname;
+    String offprom;
+    String offval;
+    private String mysearch;
     private ArrayList productList;
 
 
-    /**
-     * The fragment's current callback object, which is notified of list item
-     * clicks.
-     */
-    private Callbacks mCallbacks = sDummyCallbacks;
 
-    /**
-     * The current activated item position. Only used on tablets.
-     */
+    private Callbacks mCallbacks = sDummyCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private ProductListAdapter adapter;
-
-
-    /**
-     * A callback interface that all activities containing this fragment must
-     * implement. This mechanism allows activities to be notified of item
-     * selections.
-     */
     public interface Callbacks {
-        /**
-         * Callback for when an item has been selected.
-         */
         public void onItemSelected(ProductEvent event);
     }
-
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onItemSelected(ProductEvent event) {
-
-
         }
     };
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public OfferListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         productList = new ArrayList<HashMap<String, String>>();
-
-        //adapter.addEvent(new ProductEvent(12345678L,"EAN1", "http://img.tesco.com/Groceries/pi/966/4015400621966/IDShot_90x90.jpg","Name1"));
-        //adapter.addEvent(new ProductEvent(22345678L,"EAN2", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name2"));
-        //adapter. addEvent(new ProductEvent(32345678L,"EAN3", "http://images2.farmlanebooks.co.uk/2009/07/twitter-blue.png","Name3"));
-        //adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009A/07/twitter-blue.png","Name4"));
-
-
         new GetLogin().execute();
-
-
     }
 
     @Override
@@ -121,6 +92,7 @@ public class OfferListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
+        this.getListView().setSelector(R.drawable.bg_key);
 
     }
 
@@ -191,6 +163,10 @@ public class OfferListFragment extends ListFragment {
         mActivatedPosition = myposition;
     }
 
+    public void set_search(String search){
+        this.mysearch = search;
+    }
+
     private class GetLogin extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -233,14 +209,16 @@ public class OfferListFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            // Dismiss the progress dialog
-            //if (pDialog.isShowing())
-             //   pDialog.dismiss();
-            /**
-             * Updating parsed JSON data into ListView
-             * */
 
-            url2 = url2 + login;
+            //URL Encoder to encode user input
+            try {
+                mysearch = URLEncoder.encode(mysearch,"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+            url3 = url2a+ mysearch + url2b + login;
             Log.d("Response: ", "> " + login);
             //adapter.addEvent(new ProductEvent(42345678L,"EAN4", "http://images2.farmlanebooks.co.uk/2009A/07/twitter-blue.png",login));
             new GetOffers().execute();
@@ -265,7 +243,7 @@ public class OfferListFragment extends ListFragment {
             ServiceHandler sh = new ServiceHandler();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(url2, ServiceHandler.GET);
+            String jsonStr = sh.makeServiceCall(url3, ServiceHandler.GET);
             Log.d("Response: ", "> " + jsonStr);
 
             if (jsonStr != null) {
@@ -275,21 +253,23 @@ public class OfferListFragment extends ListFragment {
                     JSONArray products = jsonObj.getJSONArray("Products");
 
                     // looping through All Contacts
-                    //for (int i = 0; i < products.length(); i++) {
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < products.length(); i++) {
+                    //for (int i = 0; i < 5; i++) {
                         // Getting JSON Array node
                         JSONObject p = products.getJSONObject(i);
                         basep = p.getString(TAG_basep);
                         ean = p.getString(TAG_ean);
                         img = p.getString(TAG_img);
                         pname = p.getString(TAG_pname);
+                        offprom = p.getString(TAG_OffProm);
+                        offval=p.getString(TAG_OffVal);
 
                         //HashMap<String, String> product = new HashMap<String, String>();
                         //product.put(TAG_basep, basep);
                         //product.put(TAG_ean, ean);
                         //product.put(TAG_img, img);
                         //product.put(TAG_pname, pname);
-                        ProductEvent product = new ProductEvent(basep,ean, img,pname);
+                        ProductEvent product = new ProductEvent(basep,ean, img,pname,offprom,offval);
                         productList.add(product);
                         //getActivity().runOnUiThread(new Runnable() {
                         //    public void run(){

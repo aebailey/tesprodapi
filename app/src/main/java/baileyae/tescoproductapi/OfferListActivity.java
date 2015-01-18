@@ -40,10 +40,7 @@ public class OfferListActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_list);
         mysearch = getIntent().getStringExtra("SEARCH");
-
-
-
-
+        ((OfferListFragment)getFragmentManager().findFragmentById(R.id.offer_list)).set_search(mysearch);
 
         if (findViewById(R.id.offer_detail_container) != null) {
             // The detail container view will be present only in the
